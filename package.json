@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
+    "start:build": "tsc",
     "tsc:watch": "tsc -w",
-    "start:serve": "nodemon ./dist/index"
+    "start:serve": "node ./dist/index.js",
+    "start:dev": "nodemon --inspect ./dist/index.js"
   },
   "author": "ye.zaikou",
   "license": "ISC",
