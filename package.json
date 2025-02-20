@@ -8,6 +8,9 @@
     "start:serve": "node ./dist/index.js",
     "start:dev": "nodemon --inspect ./dist/index.js"
   },
+  "engines": {
+    "node": "21.7"
+  },
   "author": "ye.zaikou",
   "license": "ISC",
   "description": "home study project on backend",
