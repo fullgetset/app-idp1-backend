@@ -1,0 +1,23 @@
+{
+  "name": "app-idp1-backend",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "tsc:watch": "tsc -w",
+    "start:serve": "nodemon ./dist/index"
+  },
+  "author": "ye.zaikou",
+  "license": "ISC",
+  "description": "home study project on backend",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
