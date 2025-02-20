@@ -1,0 +1,8 @@
+export enum HTTP_STATUSES {
+  OK_200 = 200,
+  CREATED_201 = 201,
+  NO_CONTENT_204 = 204,
+
+  NOT_FOUND = 404,
+  BAD_REQUEST_400 = 400,
+}

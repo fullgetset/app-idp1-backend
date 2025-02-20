@@ -1,4 +1,6 @@
-export const db = {
+import { Books } from '@types';
+
+export const db: { books: Books[] } = {
   books: [
     {
       id: '1',
