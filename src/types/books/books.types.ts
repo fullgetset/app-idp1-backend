@@ -11,3 +11,7 @@ export interface IImg {
   alt: string;
   src: string;
 }
+
+export interface DBType {
+  books: Books[]
+}
