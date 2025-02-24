@@ -6,7 +6,7 @@ export const db: DBType = {
       id: '1',
       title: 'Алекс Бигмак',
       img: {
-        alt: 'Алекс Бигмак',
+        alt: 'Алекс Бигмак 123',
         src: '../assets/images/1.jpg',
       },
       price: '22.22 USD',
