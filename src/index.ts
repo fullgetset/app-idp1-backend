@@ -21,6 +21,7 @@ app.get('/books/:id', (req: Request<{ id: string }>, res: Response<Books>) => {
 
   if (!book) {
     res.sendStatus(HTTP_STATUSES.NOT_FOUND);
+    console.log(12)
   } else {
     res.json(book);
   }
