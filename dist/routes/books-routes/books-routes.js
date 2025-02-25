@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBooksRouter = void 0;
 const express_1 = __importDefault(require("express"));
+const express_validator_1 = require("express-validator");
 const enums_1 = require("../../enums");
 const repositories_1 = require("../../repositories");
 const getBooksRouter = () => {
@@ -22,7 +23,14 @@ const getBooksRouter = () => {
             res.json(book);
         }
     });
-    booksRouter.post('/', (req, res) => {
+    booksRouter.post('/', (0, express_validator_1.body)('title').isLength({ min: 3, max: 40 }), (req, res) => {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            res
+                .status(enums_1.HTTP_STATUSES.BAD_REQUEST_400)
+                .json({ errors: errors.array() });
+            return;
+        }
         const { title } = req.body;
         if (title) {
             repositories_1.booksRepository.createBook({ title });

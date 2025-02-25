@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
 
 import { HTTP_STATUSES } from '../../enums';
 import {
@@ -31,17 +32,30 @@ const getBooksRouter = () => {
     }
   );
 
-  booksRouter.post('/', (req: RequestBody<{ title: string }>, res) => {
-    const { title } = req.body;
+  booksRouter.post(
+    '/',
+    body('title').isLength({ min: 3, max: 40 }),
+    (req: RequestBody<{ title: string }>, res) => {
+      const errors = validationResult(req);
 
-    if (title) {
-      booksRepository.createBook({ title });
+      if (!errors.isEmpty()) {
+        res
+          .status(HTTP_STATUSES.BAD_REQUEST_400)
+          .json({ errors: errors.array() });
+        return;
+      }
 
-      res.sendStatus(HTTP_STATUSES.CREATED_201);
-    } else {
-      res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
+      const { title } = req.body;
+
+      if (title) {
+        booksRepository.createBook({ title });
+
+        res.sendStatus(HTTP_STATUSES.CREATED_201);
+      } else {
+        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
+      }
     }
-  });
+  );
 
   booksRouter.delete('/', (req: RequestQuery<{ id: string }>, res) => {
     const { id } = req.query;

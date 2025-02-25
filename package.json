@@ -16,7 +16,8 @@
   "description": "home study project on backend",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
