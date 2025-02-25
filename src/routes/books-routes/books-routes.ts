@@ -8,19 +8,20 @@ import {
   RequestParams,
   RequestQuery,
 } from '@types';
+import { booksRepository } from '../../repositories';
 
-const getBooksRouter = (db: DBType) => {
+const getBooksRouter = () => {
   const booksRouter = express.Router();
 
   booksRouter.get('/', (req: Request, res: Response<Books[]>) => {
-    res.json(db.books);
+    res.json(booksRepository.getBooks());
   });
 
   booksRouter.get(
-    '/:id',
+    '/:id([0-9]+)',
     (req: RequestParams<{ id: string }>, res: Response<Books>) => {
       const { id } = req.params;
-      const book = db.books.find((book) => book.id === id);
+      const book = booksRepository.findBook(id);
 
       if (!book) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND);
@@ -34,17 +35,7 @@ const getBooksRouter = (db: DBType) => {
     const { title } = req.body;
 
     if (title) {
-      db.books.push({
-        id: `${Number(db.books.at(-1)?.id) + 1}`,
-        title,
-        img: {
-          alt: title,
-          src: '',
-        },
-        price: '22 USD',
-        description: title,
-        rating: 5,
-      });
+      booksRepository.createBook({ title });
 
       res.sendStatus(HTTP_STATUSES.CREATED_201);
     } else {
@@ -58,33 +49,37 @@ const getBooksRouter = (db: DBType) => {
     if (!id) {
       res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
     } else {
-      const indexId = db.books.findIndex((book) => book.id === id);
+      const isDeleted = booksRepository.deleteBook(id);
 
-      if (indexId > -1) {
-        db.books.splice(indexId, 1);
-        res.sendStatus(HTTP_STATUSES.OK_200);
+      isDeleted
+        ? res.sendStatus(HTTP_STATUSES.OK_200)
+        : res.sendStatus(HTTP_STATUSES.NOT_FOUND);
+    }
+  });
+
+  booksRouter.put(
+    '/:id([0-9]+)',
+    (
+      req: RequestParams<{ id: string }> & RequestBody<{ title: string }>,
+      res
+    ) => {
+      const { id } = req.params;
+      const { title } = req.body;
+
+      if (!title) {
+        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
+        return;
+      }
+
+      const isUpdated = booksRepository.updateBooks({ id, title });
+
+      if (isUpdated) {
+        res.sendStatus(HTTP_STATUSES.CREATED_201);
       } else {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND);
       }
     }
-  });
-
-  booksRouter.put('/:id', (req, res) => {
-    const foundBook = db.books.find((book) => book.id === req.params.id);
-
-    if (!req.body.title) {
-      res.sendStatus(400);
-      return;
-    }
-
-    if (!foundBook) {
-      res.sendStatus(404);
-      return;
-    }
-
-    foundBook.title = req.body.title;
-    res.sendStatus(204);
-  });
+  );
 
   return booksRouter;
 };

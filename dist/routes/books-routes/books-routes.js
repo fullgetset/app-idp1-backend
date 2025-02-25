@@ -6,14 +6,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBooksRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const enums_1 = require("../../enums");
-const getBooksRouter = (db) => {
+const repositories_1 = require("../../repositories");
+const getBooksRouter = () => {
     const booksRouter = express_1.default.Router();
     booksRouter.get('/', (req, res) => {
-        res.json(db.books);
+        res.json(repositories_1.booksRepository.getBooks());
     });
-    booksRouter.get('/:id', (req, res) => {
+    booksRouter.get('/:id([0-9]+)', (req, res) => {
         const { id } = req.params;
-        const book = db.books.find((book) => book.id === id);
+        const book = repositories_1.booksRepository.findBook(id);
         if (!book) {
             res.sendStatus(enums_1.HTTP_STATUSES.NOT_FOUND);
         }
@@ -22,20 +23,9 @@ const getBooksRouter = (db) => {
         }
     });
     booksRouter.post('/', (req, res) => {
-        var _a;
         const { title } = req.body;
         if (title) {
-            db.books.push({
-                id: `${Number((_a = db.books.at(-1)) === null || _a === void 0 ? void 0 : _a.id) + 1}`,
-                title,
-                img: {
-                    alt: title,
-                    src: '',
-                },
-                price: '22 USD',
-                description: title,
-                rating: 5,
-            });
+            repositories_1.booksRepository.createBook({ title });
             res.sendStatus(enums_1.HTTP_STATUSES.CREATED_201);
         }
         else {
@@ -48,28 +38,26 @@ const getBooksRouter = (db) => {
             res.sendStatus(enums_1.HTTP_STATUSES.BAD_REQUEST_400);
         }
         else {
-            const indexId = db.books.findIndex((book) => book.id === id);
-            if (indexId > -1) {
-                db.books.splice(indexId, 1);
-                res.sendStatus(enums_1.HTTP_STATUSES.OK_200);
-            }
-            else {
-                res.sendStatus(enums_1.HTTP_STATUSES.NOT_FOUND);
-            }
+            const isDeleted = repositories_1.booksRepository.deleteBook(id);
+            isDeleted
+                ? res.sendStatus(enums_1.HTTP_STATUSES.OK_200)
+                : res.sendStatus(enums_1.HTTP_STATUSES.NOT_FOUND);
         }
     });
-    booksRouter.put('/:id', (req, res) => {
-        const foundBook = db.books.find((book) => book.id === req.params.id);
-        if (!req.body.title) {
-            res.sendStatus(400);
+    booksRouter.put('/:id([0-9]+)', (req, res) => {
+        const { id } = req.params;
+        const { title } = req.body;
+        if (!title) {
+            res.sendStatus(enums_1.HTTP_STATUSES.BAD_REQUEST_400);
             return;
         }
-        if (!foundBook) {
-            res.sendStatus(404);
-            return;
+        const isUpdated = repositories_1.booksRepository.updateBooks({ id, title });
+        if (isUpdated) {
+            res.sendStatus(enums_1.HTTP_STATUSES.CREATED_201);
         }
-        foundBook.title = req.body.title;
-        res.sendStatus(204);
+        else {
+            res.sendStatus(enums_1.HTTP_STATUSES.NOT_FOUND);
+        }
     });
     return booksRouter;
 };
