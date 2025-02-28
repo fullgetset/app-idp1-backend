@@ -1,21 +1,27 @@
 import { Books } from '@types';
-import { db } from './books-memory-repository.variables';
+// import { db } from './books-memory-repository.variables';
+import { client } from '../books-repository';
+
+const collectionBooks = client.db('books').collection<Books>('books');
 
 const booksRepository = {
-  getBooks(): Books[] {
-    
-    return db.books;
+  async getBooks(): Promise<Books[]> {
+    return collectionBooks.find().toArray();
   },
 
-  findBook(id: string): Books | undefined {
-    const book = db.books.find((book) => book.id === id);
+  async findBook(id: string): Promise<Books | undefined> {
+    const books = await collectionBooks.find().toArray();
+
+    const book = books.find((book) => book.id === id);
 
     return book;
   },
 
-  createBook({ title }: { title: string }): Books[] {
+  async createBook({ title }: { title: string }): Promise<Books[]> {
+    const books = await collectionBooks.find().toArray();
+
     const newBook = {
-      id: `${Number(db.books.at(-1)?.id) + 1}`,
+      id: `${Number(books.at(-1)?.id) + 1}`,
       title,
       img: {
         alt: title,
@@ -26,9 +32,10 @@ const booksRepository = {
       rating: 5,
     };
 
-    db.books.push(newBook);
+    await collectionBooks.insertOne(newBook);
+    // db.books.push(newBook);
 
-    return db.books;
+    return books;
   },
 
   deleteBook(id: string): boolean {

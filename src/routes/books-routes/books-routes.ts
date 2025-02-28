@@ -14,15 +14,16 @@ import { booksRepository } from '../../repositories';
 const getBooksRouter = () => {
   const booksRouter = express.Router();
 
-  booksRouter.get('/', (req: Request, res: Response<Books[]>) => {
-    res.json(booksRepository.getBooks());
+  booksRouter.get('/', async (req: Request, res: Response<Books[]>) => {
+    const books = await booksRepository.getBooks();
+    res.json(books);
   });
 
   booksRouter.get(
     '/:id([0-9]+)',
-    (req: RequestParams<{ id: string }>, res: Response<Books>) => {
+    async (req: RequestParams<{ id: string }>, res: Response<Books>) => {
       const { id } = req.params;
-      const book = booksRepository.findBook(id);
+      const book = await booksRepository.findBook(id);
 
       if (!book) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND);
