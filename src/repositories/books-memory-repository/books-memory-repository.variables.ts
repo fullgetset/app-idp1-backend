@@ -1,4 +1,4 @@
-import { Books, DBType } from '@types';
+import { DBType } from '@types';
 
 export const db: DBType = {
   books: [

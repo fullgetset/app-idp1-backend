@@ -1,55 +1,19 @@
-import { Books } from '@types';
-import { db } from '../../mocks/db';
+import { MongoClient } from 'mongodb';
 
-const booksRepository = {
-  getBooks(): Books[] {
-    return db.books;
-  },
+const mongoUri = process.env.mongoUri || 'mongodb://127.0.0.1:27017';
 
-  findBook(id: string): Books | undefined {
-    const book = db.books.find((book) => book.id === id);
+export const client = new MongoClient(mongoUri);
 
-    return book;
-  },
+export const runDb = async () => {
+  try {
+    await client.connect();
 
-  createBook({ title }: { title: string }): Books[] {
-    const newBook = {
-      id: `${Number(db.books.at(-1)?.id) + 1}`,
-      title,
-      img: {
-        alt: title,
-        src: '',
-      },
-      price: '22 USD',
-      description: title,
-      rating: 5,
-    };
+    await client.db('books').command({ ping: 1 });
 
-    db.books.push(newBook);
+    console.log('Connected successfully to mongo server');
+  } catch {
+    console.log(`Can't connect to db`);
 
-    return db.books;
-  },
-
-  deleteBook(id: string): boolean {
-    const indexId = db.books.findIndex((book) => book.id === id);
-
-    if (indexId !== -1) {
-      db.books.splice(indexId, 1);
-      return true;
-    }
-    return false;
-  },
-
-  updateBooks({ id, title }: { id: string; title: string }): boolean {
-    const foundBook = db.books.find((book) => book.id === id);
-
-    if (foundBook) {
-      foundBook.title = title;
-      return true;
-    }
-    return false;
-  },
+    await client.close();
+  }
 };
-
-export { booksRepository };
-  

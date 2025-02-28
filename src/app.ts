@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { getBooksRouter } from './routes';
-import { db } from './mocks/db';
 
 export const app = express();
 
