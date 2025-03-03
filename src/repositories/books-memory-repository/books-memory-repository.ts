@@ -38,24 +38,34 @@ const booksRepository = {
     return books;
   },
 
-  deleteBook(id: string): boolean {
-    const indexId = db.books.findIndex((book) => book.id === id);
+  async deleteBook(id: string): Promise<boolean> {
+    // const indexId = db.books.findIndex((book) => book.id === id);
+    const result = await collectionBooks.deleteOne({ id });
 
-    if (indexId !== -1) {
-      db.books.splice(indexId, 1);
+    return result.deletedCount >= 1;
+
+    /* if (result.deletedCount >= 1) {
       return true;
     }
-    return false;
+    return false; */
   },
 
-  updateBooks({ id, title }: { id: string; title: string }): boolean {
-    const foundBook = db.books.find((book) => book.id === id);
+  async updateBooks({
+    id,
+    title,
+  }: {
+    id: string;
+    title: string;
+  }): Promise<boolean> {
+    const result = await collectionBooks.updateOne({ id }, { $set: { title } });
 
-    if (foundBook) {
+    return result.modifiedCount >= 1;
+    // const foundBook = db.books.find((book) => book.id === id);
+    /* if (foundBook) {
       foundBook.title = title;
       return true;
     }
-    return false;
+    return false; */
   },
 };
 

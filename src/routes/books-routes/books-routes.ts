@@ -58,13 +58,13 @@ const getBooksRouter = () => {
     }
   );
 
-  booksRouter.delete('/', (req: RequestQuery<{ id: string }>, res) => {
+  booksRouter.delete('/', async (req: RequestQuery<{ id: string }>, res) => {
     const { id } = req.query;
 
     if (!id) {
       res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
     } else {
-      const isDeleted = booksRepository.deleteBook(id);
+      const isDeleted = await booksRepository.deleteBook(id);
 
       isDeleted
         ? res.sendStatus(HTTP_STATUSES.OK_200)
@@ -74,7 +74,7 @@ const getBooksRouter = () => {
 
   booksRouter.put(
     '/:id([0-9]+)',
-    (
+    async (
       req: RequestParams<{ id: string }> & RequestBody<{ title: string }>,
       res
     ) => {
@@ -86,7 +86,7 @@ const getBooksRouter = () => {
         return;
       }
 
-      const isUpdated = booksRepository.updateBooks({ id, title });
+      const isUpdated = await booksRepository.updateBooks({ id, title });
 
       if (isUpdated) {
         res.sendStatus(HTTP_STATUSES.CREATED_201);

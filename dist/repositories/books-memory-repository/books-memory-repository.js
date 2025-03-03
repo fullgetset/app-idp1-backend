@@ -47,20 +47,27 @@ const booksRepository = {
         });
     },
     deleteBook(id) {
-        const indexId = db.books.findIndex((book) => book.id === id);
-        if (indexId !== -1) {
-            db.books.splice(indexId, 1);
-            return true;
-        }
-        return false;
+        return __awaiter(this, void 0, void 0, function* () {
+            // const indexId = db.books.findIndex((book) => book.id === id);
+            const result = yield collectionBooks.deleteOne({ id });
+            return result.deletedCount >= 1;
+            /* if (result.deletedCount >= 1) {
+              return true;
+            }
+            return false; */
+        });
     },
-    updateBooks({ id, title }) {
-        const foundBook = db.books.find((book) => book.id === id);
-        if (foundBook) {
-            foundBook.title = title;
-            return true;
-        }
-        return false;
+    updateBooks(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ id, title, }) {
+            const result = yield collectionBooks.updateOne({ id }, { $set: { title } });
+            return result.modifiedCount >= 1;
+            // const foundBook = db.books.find((book) => book.id === id);
+            /* if (foundBook) {
+              foundBook.title = title;
+              return true;
+            }
+            return false; */
+        });
     },
 };
 exports.booksRepository = booksRepository;

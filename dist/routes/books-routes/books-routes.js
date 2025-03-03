@@ -50,33 +50,33 @@ const getBooksRouter = () => {
             res.sendStatus(enums_1.HTTP_STATUSES.BAD_REQUEST_400);
         }
     });
-    booksRouter.delete('/', (req, res) => {
+    booksRouter.delete('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.query;
         if (!id) {
             res.sendStatus(enums_1.HTTP_STATUSES.BAD_REQUEST_400);
         }
         else {
-            const isDeleted = repositories_1.booksRepository.deleteBook(id);
+            const isDeleted = yield repositories_1.booksRepository.deleteBook(id);
             isDeleted
                 ? res.sendStatus(enums_1.HTTP_STATUSES.OK_200)
                 : res.sendStatus(enums_1.HTTP_STATUSES.NOT_FOUND);
         }
-    });
-    booksRouter.put('/:id([0-9]+)', (req, res) => {
+    }));
+    booksRouter.put('/:id([0-9]+)', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.params;
         const { title } = req.body;
         if (!title) {
             res.sendStatus(enums_1.HTTP_STATUSES.BAD_REQUEST_400);
             return;
         }
-        const isUpdated = repositories_1.booksRepository.updateBooks({ id, title });
+        const isUpdated = yield repositories_1.booksRepository.updateBooks({ id, title });
         if (isUpdated) {
             res.sendStatus(enums_1.HTTP_STATUSES.CREATED_201);
         }
         else {
             res.sendStatus(enums_1.HTTP_STATUSES.NOT_FOUND);
         }
-    });
+    }));
     return booksRouter;
 };
 exports.getBooksRouter = getBooksRouter;
