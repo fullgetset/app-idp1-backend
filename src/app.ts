@@ -6,6 +6,6 @@ export const app = express();
 
 const jsonBodyMiddleware = express.json();
 app.use(jsonBodyMiddleware);
-app.use(cors({ origin: 'http://localhost:3001' }));
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 app.use('/books', getBooksRouter());

@@ -16,7 +16,8 @@ const getBooksRouter = () => {
 
   booksRouter.get('/', async (req: Request, res: Response<Books[]>) => {
     const books = await booksRepository.getBooks();
-    res.json(books);
+
+    setTimeout(() => res.json(books), 1000);
   });
 
   booksRouter.get(
