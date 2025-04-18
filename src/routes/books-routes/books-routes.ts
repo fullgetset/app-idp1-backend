@@ -9,15 +9,22 @@ import {
   RequestParams,
   RequestQuery,
 } from '@types';
-import { booksRepository } from '../../repositories';
+import { booksRepository, UpdateBooks } from '../../repositories';
 
 const getBooksRouter = () => {
   const booksRouter = express.Router();
 
-  booksRouter.get('/', async (req: Request, res: Response<Books[]>) => {
-    const books = await booksRepository.getBooks();
+  booksRouter.get('/all', async (req: Request, res: Response<Books[]>) => {
+    const books = await booksRepository.getBooksAll();
 
-    setTimeout(() => res.json(books), 1000);
+    res.json(books);
+  });
+
+  booksRouter.get('/', async (req: Request, res: Response<Books[]>) => {
+    const { page } = req.query;
+    const books = await booksRepository.getBooks((page as string) || '0');
+
+    setTimeout(() => res.json(books));
   });
 
   booksRouter.get(
@@ -76,18 +83,24 @@ const getBooksRouter = () => {
   booksRouter.put(
     '/:id([0-9]+)',
     async (
-      req: RequestParams<{ id: string }> & RequestBody<{ title: string }>,
+      req: RequestParams<{ id: string }> & RequestBody<UpdateBooks>,
       res
     ) => {
       const { id } = req.params;
-      const { title } = req.body;
+      const { title, description, price, img } = req.body;
 
       if (!title) {
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
         return;
       }
 
-      const isUpdated = await booksRepository.updateBooks({ id, title });
+      const isUpdated = await booksRepository.updateBooks({
+        id,
+        title,
+        description,
+        price,
+        img,
+      });
 
       if (isUpdated) {
         res.sendStatus(HTTP_STATUSES.CREATED_201);
