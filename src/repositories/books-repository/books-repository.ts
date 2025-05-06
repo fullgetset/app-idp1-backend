@@ -29,7 +29,15 @@ const booksRepository = {
     return book;
   },
 
-  async createBook({ title }: { title: string }): Promise<Books[]> {
+  async createBook({
+    title,
+    price,
+    description,
+  }: {
+    title: string;
+    price: string;
+    description: string;
+  }): Promise<Books[]> {
     const books = await collectionBooks.find().toArray();
 
     const newBook = {
@@ -39,8 +47,8 @@ const booksRepository = {
         alt: title,
         src: '',
       },
-      price: '22 USD',
-      description: title,
+      price: `${price} USD`,
+      description,
       rating: 5,
     };
 

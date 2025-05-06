@@ -44,7 +44,10 @@ const getBooksRouter = () => {
   booksRouter.post(
     '/',
     body('title').isLength({ min: 3, max: 40 }),
-    (req: RequestBody<{ title: string }>, res) => {
+    (
+      req: RequestBody<{ title: string; price: string; description: string }>,
+      res
+    ) => {
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
@@ -54,10 +57,8 @@ const getBooksRouter = () => {
         return;
       }
 
-      const { title } = req.body;
-
-      if (title) {
-        booksRepository.createBook({ title });
+      if (req.body.title) {
+        booksRepository.createBook(req.body);
 
         res.sendStatus(HTTP_STATUSES.CREATED_201);
       } else {
