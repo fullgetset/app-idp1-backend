@@ -71,10 +71,10 @@ const booksRepository = {
     price,
   }: UpdateBooks): Promise<boolean> {
     const updateFields: Omit<UpdateBooks, 'id'> = {};
-    if (title !== undefined) updateFields.title = title;
-    if (description !== undefined) updateFields.description = description;
-    if (img !== undefined) updateFields.img = img;
-    if (price !== undefined) updateFields.price = price;
+    if (title) updateFields.title = title;
+    if (description) updateFields.description = description;
+    if (img) updateFields.img = img;
+    if (price) updateFields.price = price;
 
     const result = await collectionBooks.updateOne(
       { id },
