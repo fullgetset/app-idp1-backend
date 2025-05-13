@@ -90,7 +90,7 @@ const getBooksRouter = () => {
       const { id } = req.params;
       const { title, description, price, img } = req.body;
 
-      if (!title) {
+      if (!title && !description && !price) {
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
         return;
       }
